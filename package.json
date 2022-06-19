@@ -4,11 +4,11 @@
   "description": "Shopping List built with MERN Stack",
   "main": "server.js",
   "scripts": {
-    "client-install":"npm install --prefix client",
+    "client-install":"npm install --prefix client_side",
     "start": "node server.js",
     "server": "nodemon server.js",
-    "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"" 
+    "client_side": "npm start --prefix client_side",
+    "dev": "concurrently \"npm run server\" \"npm run client_side\"" 
   },
   "author": "Tanu Gupta",
   "license": "MIT",
