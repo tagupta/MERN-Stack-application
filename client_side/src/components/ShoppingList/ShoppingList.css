@@ -1,0 +1,25 @@
+.container{
+    margin-top: 1.5rem;
+}
+
+.item-enter {
+    opacity: 0.01;
+}
+
+.item-enter-active {
+opacity: 1;
+transition: opacity 1000ms ease-in;
+}
+
+.item-exit {
+opacity: 1;
+}
+
+.item-exit-active {
+opacity: 0.01;
+transition: opacity 1000ms ease-in;
+}
+
+.remove-btn{
+    margin-right: 1rem;
+}

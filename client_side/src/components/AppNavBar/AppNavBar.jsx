@@ -3,14 +3,10 @@ import {Navbar, NavbarBrand, NavbarToggler, Collapse, Nav, NavItem, NavLink } fr
 import './AppNavBar.css';
 
 class AppNavBar extends Component {
-    constructor(){
-        super();
-        this.state = {
-            isOpen: false
-        }
+    state = {
+        isOpen: false
     }
- 
-
+    
     toggle = () => {
         const {isOpen} = this.state;
         this.setState({isOpen: !isOpen});
