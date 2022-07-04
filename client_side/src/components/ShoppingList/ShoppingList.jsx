@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Container, ListGroup, ListGroupItem, Button,Spinner } from 'reactstrap';
 import { CSSTransition , TransitionGroup } from 'react-transition-group';
 import { useSelector, useDispatch} from 'react-redux';
-import { deleteItem} from '../../features/item/itemSlice';
+import { deleteItems} from '../../features/item/itemSlice';
 import { fetchItems } from '../../features/item/itemSlice';
 import './ShoppingList.css';
 import {ItemModal} from '../ItemModal/ItemModal';
@@ -26,10 +26,10 @@ const ShoppingList = () => {
                    : null}
                     {!itemsStore.loading && itemsStore.error ? <h5>Error: {itemsStore.error}</h5> : null}
                     {!itemsStore.loading && itemsStore.items.length ? 
-                    itemsStore.items.map( ({id,name}) => (
-                        <CSSTransition key={id} timeout={500} classNames="item">
+                    itemsStore.items.map( ({_id,name}) => (
+                        <CSSTransition key={_id} timeout={500} classNames="item">
                             <ListGroupItem>
-                                <Button className='remove-btn' color='danger' size='sm' onClick={() => dispatch(deleteItem(id))}>
+                                <Button className='remove-btn' color='danger' size='sm' onClick={() => dispatch(deleteItems(_id))}>
                                     &times;
                                 </Button>
                                 {name}
