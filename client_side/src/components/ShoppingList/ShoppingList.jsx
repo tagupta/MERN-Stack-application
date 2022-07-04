@@ -1,73 +1,45 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Container, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import {CSSTransition , TransitionGroup } from 'react-transition-group';
-import {v1 as uuid} from 'uuid';
+import {useSelector,useDispatch} from 'react-redux';
+import {getItem, addItem, deleteItem} from '../../features/item/itemSlice';
 import './ShoppingList.css';
+import {ItemModal} from '../ItemModal/ItemModal';
 
-class ShoppingList extends Component {
-    state = {
-        items : [
-            {
-                id: uuid(),
-                name: 'Eggs'
-            },
-            {
-                id: uuid(),
-                name: 'Bananas'
-            },
-            {
-                id: uuid(),
-                name: 'Chocolates'
-            },
-            {
-                id: uuid(),
-                name: 'Milk'
-            },
-        ],
-    }
-    
+const ShoppingList = () => {
+    const dispatch = useDispatch();
+    const itemsStore = useSelector(state => state.item.items);
+    const ref = useRef();
 
-    addItems = (event) =>{
-        event.preventDefault();
-        const name = prompt("Enter the item's name");
-        if(name){
-            this.setState( state => ({
-                items : [...state.items , {id: uuid(), name}] 
-            }));
-        }
+    // useEffect(() => {
+    //   dispatch(getItem());
+    // },[])
+
+    const _removeItem = (id) => {
+        dispatch(deleteItem(id));
     }
 
-    removeItem = (id) => {
-        this.setState(state => ({
-            items: state.items.filter(item => item.id !== id)
-        }))
-
-    }
-
-    render() {
-        const {items} = this.state;
-        
-        return (
-            <Container>
-                <Button color='dark' style={{marginBottom: '2rem'}} onClick={this.addItems}>Add items</Button>
-                <ListGroup>
-                   <TransitionGroup className="shopping-list">
-                        {items.map( ({id,name}) => (
-                            <CSSTransition key={id} timeout={500} classNames="item">
-                                <ListGroupItem>
-                                    <Button className='remove-btn' color='danger' size='sm' onClick={this.removeItem.bind(this,id)}>
-                                        &times;
-                                    </Button>
-                                    {name}
-                                </ListGroupItem>
-                            </CSSTransition>
-                        ))}
-                   </TransitionGroup>
-                </ListGroup>
-            </Container>
-        );
-    }
+    return (
+        <Container >
+            <ItemModal/>
+            {/* <Button color='dark' style={{marginBottom: '2rem'}} onClick={_addItems}>Add items</Button> */}
+            <ListGroup>
+                <TransitionGroup className="shopping-list" ref={ref}>
+                    {itemsStore.map( ({id,name}) => (
+                        <CSSTransition key={id} timeout={500} classNames="item">
+                            <ListGroupItem>
+                                <Button className='remove-btn' color='danger' size='sm' onClick={(e) =>_removeItem(id)}>
+                                    &times;
+                                </Button>
+                                {name}
+                            </ListGroupItem>
+                        </CSSTransition>
+                    ))}
+                </TransitionGroup>
+            </ListGroup>
+        </Container>
+    );
+  
 }
 
 export default ShoppingList;
-// {items.map(item => <ListGroupItem key={item.id}>{item.id} : {item.name}</ListGroupItem>)}
