@@ -1,7 +1,7 @@
-import React, { useState,useRef } from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Input, Label, Form, FormGroup } from 'reactstrap';
-import {addItem} from '../../features/item/itemSlice';
+import { Button, Modal, ModalHeader, ModalBody, Input, Label, Form, FormGroup } from 'reactstrap';
+import { addItems } from '../../features/item/itemSlice';
 
 export const ItemModal = () => {
     const [modal,setModal] = useState(false);
@@ -18,7 +18,12 @@ export const ItemModal = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(addItem(name));
+        const newItem = {
+            "name": name
+        }
+        dispatch(addItems(newItem));
+
+        // dispatch(addItem(newItem));
         toggle();
     }
 

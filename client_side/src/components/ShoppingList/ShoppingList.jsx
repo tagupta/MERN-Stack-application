@@ -1,41 +1,44 @@
-import React, { useEffect, useRef } from 'react';
-import { Container, ListGroup, ListGroupItem, Button } from 'reactstrap';
-import {CSSTransition , TransitionGroup } from 'react-transition-group';
-import {useSelector,useDispatch} from 'react-redux';
-import {getItem, addItem, deleteItem} from '../../features/item/itemSlice';
+import React, { useEffect } from 'react';
+import { Container, ListGroup, ListGroupItem, Button,Spinner } from 'reactstrap';
+import { CSSTransition , TransitionGroup } from 'react-transition-group';
+import { useSelector, useDispatch} from 'react-redux';
+import { deleteItem} from '../../features/item/itemSlice';
+import { fetchItems } from '../../features/item/itemSlice';
 import './ShoppingList.css';
 import {ItemModal} from '../ItemModal/ItemModal';
 
 const ShoppingList = () => {
     const dispatch = useDispatch();
-    const itemsStore = useSelector(state => state.item.items);
-    const ref = useRef();
+    const itemsStore = useSelector(state => state.item);
 
-    // useEffect(() => {
-    //   dispatch(getItem());
-    // },[])
-
-    const _removeItem = (id) => {
-        dispatch(deleteItem(id));
-    }
+    useEffect(() => {
+        dispatch(fetchItems());
+      // eslint-disable-next-line 
+    },[])   
 
     return (
         <Container >
             <ItemModal/>
-            {/* <Button color='dark' style={{marginBottom: '2rem'}} onClick={_addItems}>Add items</Button> */}
             <ListGroup>
-                <TransitionGroup className="shopping-list" ref={ref}>
-                    {itemsStore.map( ({id,name}) => (
+                <div className="shopping-list">
+                    {itemsStore.loading ? 
+                        <Spinner animation="border" />
+                   : null}
+                    {!itemsStore.loading && itemsStore.error ? <h5>Error: {itemsStore.error}</h5> : null}
+                    {!itemsStore.loading && itemsStore.items.length ? 
+                    itemsStore.items.map( ({id,name}) => (
                         <CSSTransition key={id} timeout={500} classNames="item">
                             <ListGroupItem>
-                                <Button className='remove-btn' color='danger' size='sm' onClick={(e) =>_removeItem(id)}>
+                                <Button className='remove-btn' color='danger' size='sm' onClick={() => dispatch(deleteItem(id))}>
                                     &times;
                                 </Button>
                                 {name}
                             </ListGroupItem>
                         </CSSTransition>
-                    ))}
-                </TransitionGroup>
+                    ))
+                    : null
+                    }
+                </div>
             </ListGroup>
         </Container>
     );
