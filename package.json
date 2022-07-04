@@ -8,7 +8,8 @@
     "start": "node server.js",
     "server": "nodemon server.js",
     "client_side": "npm start --prefix client_side",
-    "dev": "concurrently \"npm run server\" \"npm run client_side\"" 
+    "dev": "concurrently \"npm run server\" \"npm run client_side\"" ,
+    "heroku-postbuild":"NPM_CONFIG_PRODUCTION=false npm install --prefix client_side && npm run build --prefix client_side"
   },
   "author": "Tanu Gupta",
   "license": "MIT",
