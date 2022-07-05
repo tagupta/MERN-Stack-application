@@ -1,11 +1,14 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const bodyParser = require('body-parser');
-const dotenv = require('dotenv').config();
+const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const path = require('path');
 const items = require('./routes/api/items')
 
+
+dotenv.config();
+const port = process.env.PORT || 5000;
 connectDB();
 const app = express();
 
@@ -21,5 +24,5 @@ if(process.env.NODE_ENV === 'production'){
         res.sendFile(path.resolve(__dirname, 'client_side', 'build', 'index.html'));
     })
 }
-const port = process.env.PORT || 5000;
+
 app.listen(port, () => console.log(`Server started on port ${port}`));
