@@ -7,7 +7,8 @@ const path = require('path');
 const items = require('./routes/api/items')
 
 
-dotenv.config();
+dotenv.config({ path: "./config.env" });
+
 const port = process.env.PORT || 5000;
 connectDB();
 const app = express();
