@@ -4,3 +4,5 @@ node_modules
 #misc
 config.env
 # .env
+
+config
