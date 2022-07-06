@@ -1,11 +1,14 @@
 const  mongoose = require('mongoose'); 
-const dotenv = require('dotenv');
-dotenv.config({ path: "../config.env" });
+// const dotenv = require('dotenv');
+// dotenv.config({ path: "../config.env" });
+const config = require('config');
+
+//DB config
+const uri = config.get('mongoURI');
+
 const connectDB = async () =>{
   try {
-    const URI = process.env.MONGO_URI;
-    console.log(`MONGO_URI ${URI}`);
-    const conn = await mongoose.connect("mongodb+srv://tanu:tanu@shoppinglist.kvnb6ek.mongodb.net/?retryWrites=true&w=majority",{
+    const conn = await mongoose.connect(uri,{
       useNewUrlParser: true,
       useUnifiedTopology: true});
     console.log(`MongoDB Connected: ${conn.connection.host}`);

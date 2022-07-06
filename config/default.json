@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://tanu:tanu@shoppinglist.kvnb6ek.mongodb.net/?retryWrites=true&w=majority",
+    "jwtSecret": "sl_myJwtSecret"
+}

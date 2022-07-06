@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose')
-const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db');
+const connectDB = require('./database/db');
 const path = require('path');
-const items = require('./routes/api/items')
+
+// const items = require('./routes/api/items')
 
 
 dotenv.config({ path: "./config.env" });
@@ -14,8 +14,13 @@ connectDB();
 const app = express();
 
 //Bodyparser middleware
-app.use(bodyParser.json());
-app.use('/api/items', items);
+app.use(express.json());
+
+//use routes
+app.use('/api/items', require('./routes/api/items'));
+app.use('/api/users', require('./routes/api/users'));
+app.use('/api/auth', require('./routes/api/auth'));
+
 //Serve static assets if in production
 if(process.env.NODE_ENV === 'production'){
     //Set Static folder
