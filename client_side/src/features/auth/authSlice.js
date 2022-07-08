@@ -25,7 +25,7 @@ export const loadUser = createAsyncThunk('auth/loadUser', (arg, { getState, reje
 });
 
 //Register a new user
-export const registerUser = createAsyncThunk('auth/registerUser', ({ name, email, password }, { dispatch }) => {
+export const registerUser = createAsyncThunk('auth/registerUser', ({ name, email, password }, { rejectWithValue, dispatch }) => {
     const config = {
         headers: {
             "Content-type": "application/json"
@@ -37,11 +37,17 @@ export const registerUser = createAsyncThunk('auth/registerUser', ({ name, email
 
     return axios.post('/api/users', body, config)
         .then(response => response.data)
-        .catch(error => dispatch(get_errors({
-            msg: error.response.data,
-            status: error.response.status,
-            id: 'REGISTER_FAIL'
-        })))
+        .catch(error => {
+            dispatch(get_errors({
+                msg: error.response.data,
+                status: error.response.status,
+                id: 'REGISTER_FAIL'
+            }));
+            return rejectWithValue({
+                data: error.response.data,
+                status: error.response.status
+            })
+        })
 
 })
 
