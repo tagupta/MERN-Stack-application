@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from 'axios';
-import { get_errors, clear_error } from "../error/errorSlice";
+import { get_errors } from "../error/errorSlice";
 
 const initialState = {
     token: localStorage.getItem('token'),
@@ -10,7 +10,7 @@ const initialState = {
 }
 
 //Check token and load user
-export const loadUser = createAsyncThunk('auth/loadUser', async (arg, { getState, rejectWithValue, dispatch }) => {
+export const loadUser = createAsyncThunk('auth/loadUser', (arg, { getState, rejectWithValue, dispatch }) => {
 
     return axios.get('/api/auth/user', tokenConfig(getState))
         .then(response => response.data)
@@ -24,19 +24,34 @@ export const loadUser = createAsyncThunk('auth/loadUser', async (arg, { getState
         });
 });
 
+//Register a new user
+export const registerUser = createAsyncThunk('auth/registerUser', ({ name, email, password }, { dispatch }) => {
+    const config = {
+        headers: {
+            "Content-type": "application/json"
+        }
+    }
+
+    //Request body
+    const body = JSON.stringify({ name, email, password });
+
+    return axios.post('/api/users', body, config)
+        .then(response => response.data)
+        .catch(error => dispatch(get_errors({
+            msg: error.response.data,
+            status: error.response.status,
+            id: 'REGISTER_FAIL'
+        })))
+
+})
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
         login_success: (state, action) => {
             console.log('Login Success', action.payload);
-            state.isAuthenticated = true;
-            state.isLoading = false;
-            state.user = action.payload.user;
-            state.token = action.payload.token;
-        },
-        register_success: (state, action) => {
-            console.log('Register Success', action.payload);
+            localStorage.setItem('token', action.payload.token);
             state.isAuthenticated = true;
             state.isLoading = false;
             state.user = action.payload.user;
@@ -55,13 +70,6 @@ const authSlice = createSlice({
             state.user = null;
             state.isAuthenticated = false;
             state.isLoading = false;
-        },
-        register_fail: (state) => {
-            localStorage.removeItem('token');
-            state.token = null;
-            state.user = null;
-            state.isAuthenticated = false;
-            state.isLoading = false;
         }
     },
     extraReducers: builder => {
@@ -74,6 +82,20 @@ const authSlice = createSlice({
             state.user = action.payload;
         })
         builder.addCase(loadUser.rejected, (state) => {
+            localStorage.removeItem('token');
+            state.token = null;
+            state.user = null;
+            state.isAuthenticated = false;
+            state.isLoading = false;
+        })
+        builder.addCase(registerUser.fulfilled, (state, action) => {
+            localStorage.setItem('token', action.payload.token);
+            state.isAuthenticated = true;
+            state.isLoading = false;
+            state.user = action.payload.user;
+            state.token = action.payload.token;
+        })
+        builder.addCase(registerUser.rejected, (state) => {
             localStorage.removeItem('token');
             state.token = null;
             state.user = null;
