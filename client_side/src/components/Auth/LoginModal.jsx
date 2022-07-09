@@ -5,12 +5,11 @@ import {
     Button, Modal, ModalHeader, ModalBody, Input, Label,
     Form, FormGroup, Col, FormFeedback, NavLink, Alert
 } from 'reactstrap';
-import { registerUser } from '../../features/auth/authSlice';
 import { clear_error } from '../../features/error/errorSlice';
+import { loginUser } from '../../features/auth/authSlice';
 
-export const RegisterModal = () => {
+export const LoginModal = () => {
     const [modal, setModal] = useState(false);
-    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState(null);
@@ -24,7 +23,7 @@ export const RegisterModal = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (error.id === 'REGISTER_FAIL') {
+        if (error.id === 'LOGIN_FAIL') {
             setMessage(error.msg);
             setAlertVisible(true);
             window.setTimeout(() => {
@@ -54,12 +53,11 @@ export const RegisterModal = () => {
         e.preventDefault();
         if (isEmailValid) {
             //Action
-            const newUser = {
-                name,
+            const setUser = {
                 email,
                 password
-            };
-            dispatch(registerUser(newUser));
+            }
+            dispatch(loginUser(setUser));
             // toggle();
         }
         else {
@@ -87,18 +85,12 @@ export const RegisterModal = () => {
 
     return (
         <div>
-            <NavLink href="#" onClick={toggle}>Register</NavLink>
+            <NavLink href="#" onClick={toggle}>Login</NavLink>
             <Modal isOpen={modal} toggle={toggle}>
-                <ModalHeader toggle={toggle}>Register User</ModalHeader>
+                <ModalHeader toggle={toggle}>Login</ModalHeader>
                 <ModalBody>
                     {message ? <Alert color='danger' isOpen={alertVisible}>{message}</Alert> : null}
                     <Form inline onSubmit={handleSubmit}>
-                        <FormGroup row>
-                            <Label for="name" sm={2}>Name</Label>
-                            <Col sm={10}>
-                                <Input id="name" name="name" placeholder="Name" type="text" onChange={(e) => setName(e.target.value)} />
-                            </Col>
-                        </FormGroup>
                         <FormGroup row>
                             <Label for="email" sm={2}>Email</Label>
                             <Col sm={10}>
@@ -118,7 +110,7 @@ export const RegisterModal = () => {
                                 <Input id="password" name="password" placeholder="Password" type="password" onChange={(e) => setPassword(e.target.value)} />
                             </Col>
                         </FormGroup>
-                        <Button color="dark" style={{ marginTop: '2rem' }} block>Register</Button>
+                        <Button color="dark" style={{ marginTop: '2rem' }} block>Login</Button>
                     </Form>
                 </ModalBody>
             </Modal>

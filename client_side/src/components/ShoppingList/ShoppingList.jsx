@@ -10,6 +10,7 @@ import { ItemModal } from '../ItemModal/ItemModal';
 const ShoppingList = () => {
     const dispatch = useDispatch();
     const itemsStore = useSelector(state => state.item);
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
 
     useEffect(() => {
         dispatch(fetchItems());
@@ -29,9 +30,9 @@ const ShoppingList = () => {
                         itemsStore.items.map(({ _id, name }) => (
                             <CSSTransition key={_id} timeout={500} classNames="item">
                                 <ListGroupItem>
-                                    <Button className='remove-btn' color='danger' size='sm' onClick={() => dispatch(deleteItems(_id))}>
+                                    {isAuthenticated ? <Button className='remove-btn' color='danger' size='sm' onClick={() => dispatch(deleteItems(_id))}>
                                         &times;
-                                    </Button>
+                                    </Button> : ''}
                                     {name}
                                 </ListGroupItem>
                             </CSSTransition>

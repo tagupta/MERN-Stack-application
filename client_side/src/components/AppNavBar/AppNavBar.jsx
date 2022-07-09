@@ -1,38 +1,56 @@
-import React, { Component } from 'react'
 import { Navbar, NavbarBrand, NavbarToggler, Collapse, Nav, NavItem } from 'reactstrap';
 import { RegisterModal } from '../Auth/RegisterModal';
 import './AppNavBar.css';
 import { Logout } from '../Auth/Logout';
-class AppNavBar extends Component {
-    state = {
-        isOpen: false
+import { LoginModal } from '../Auth/LoginModal';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+
+const AppNavBar = () => {
+    const { isAuthenticated, user } = useSelector(state => state.auth);
+    const [isOpen, setIsOpen] = useState(false);
+
+    console.log('isAuthenticated, user', isAuthenticated, user);
+    const toggle = () => {
+        setIsOpen(!isOpen);
     }
 
-    toggle = () => {
-        const { isOpen } = this.state;
-        this.setState({ isOpen: !isOpen });
-    }
+    const guestLinks = (
+        <>
+            <NavItem>
+                <RegisterModal />
+            </NavItem>
+            <NavItem>
+                <LoginModal />
+            </NavItem>
+        </>
+    );
 
-    render() {
-        const { isOpen } = this.state;
-        return (
-            <div>
-                <Navbar color="dark" expand="sm" dark>
-                    <NavbarBrand href="/">Shopping List</NavbarBrand>
-                    <NavbarToggler onClick={this.toggle} />
-                    <Collapse navbar isOpen={isOpen}>
-                        <Nav className="ml-auto" navbar>
-                            <NavItem>
-                                <RegisterModal />
-                            </NavItem>
-                            <NavItem>
-                                <Logout />
-                            </NavItem>
-                        </Nav>
-                    </Collapse>
-                </Navbar>
-            </div>
-        );
-    }
+    const authLinks = (
+        <>
+            <NavItem>
+                <div className="navbar-text" style={{ "marginRight": "15px" }}>
+                    <strong>{user ? `Welcome ${user.name}` : ''}</strong>
+                </div>
+            </NavItem>
+            <NavItem>
+                <Logout />
+            </NavItem>
+        </>
+    );
+
+    return (
+        <div>
+            <Navbar color="dark" expand="sm" dark>
+                <NavbarBrand href="/">Shopping List</NavbarBrand>
+                <NavbarToggler onClick={toggle} />
+                <Collapse navbar isOpen={isOpen}>
+                    <Nav className="ml-auto" navbar>
+                        {isAuthenticated ? authLinks : guestLinks}
+                    </Nav>
+                </Collapse>
+            </Navbar>
+        </div>
+    );
 }
 export default AppNavBar;

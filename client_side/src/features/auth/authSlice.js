@@ -24,6 +24,31 @@ export const loadUser = createAsyncThunk('auth/loadUser', (arg, { getState, reje
         });
 });
 
+//Login a user
+export const loginUser = createAsyncThunk('auth/loginUser', ({ email, password }, { getState, rejectWithValue, dispatch }) => {
+    const config = {
+        headers: {
+            "Content-type": "application/json"
+        }
+    }
+    //Request Body
+    const body = JSON.stringify({ email, password });
+
+    return axios.post('/api/auth', body, config)
+        .then(response => response.data)
+        .catch(error => {
+            dispatch(get_errors({
+                msg: error.response.data,
+                status: error.response.status,
+                id: 'LOGIN_FAIL'
+            }));
+            return rejectWithValue({
+                data: error.response.data,
+                status: error.response.status
+            });
+        })
+})
+
 //Register a new user
 export const registerUser = createAsyncThunk('auth/registerUser', ({ name, email, password }, { rejectWithValue, dispatch }) => {
     const config = {
@@ -31,7 +56,6 @@ export const registerUser = createAsyncThunk('auth/registerUser', ({ name, email
             "Content-type": "application/json"
         }
     }
-
     //Request body
     const body = JSON.stringify({ name, email, password });
 
@@ -46,30 +70,14 @@ export const registerUser = createAsyncThunk('auth/registerUser', ({ name, email
             return rejectWithValue({
                 data: error.response.data,
                 status: error.response.status
-            })
+            });
         })
-
 })
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        login_success: (state, action) => {
-            console.log('Login Success', action.payload);
-            localStorage.setItem('token', action.payload.token);
-            state.isAuthenticated = true;
-            state.isLoading = false;
-            state.user = action.payload.user;
-            state.token = action.payload.token;
-        },
-        login_fail: (state) => {
-            localStorage.removeItem('token');
-            state.token = null;
-            state.user = null;
-            state.isAuthenticated = false;
-            state.isLoading = false;
-        },
         logout_success: (state) => {
             localStorage.removeItem('token');
             state.token = null;
@@ -108,12 +116,26 @@ const authSlice = createSlice({
             state.isAuthenticated = false;
             state.isLoading = false;
         })
+        builder.addCase(loginUser.fulfilled, (state, action) => {
+            localStorage.setItem('token', action.payload.token);
+            state.isAuthenticated = true;
+            state.isLoading = false;
+            state.user = action.payload.user;
+            state.token = action.payload.token;
+        })
+        builder.addCase(loginUser.rejected, state => {
+            localStorage.removeItem('token');
+            state.token = null;
+            state.user = null;
+            state.isAuthenticated = false;
+            state.isLoading = false;
+        })
     }
 })
 
 export const tokenConfig = (getState) => {
     //Get token from local storage
-    const token = getState().token;
+    const token = getState().auth.token;
     // Set Header for http request
     const config = {
         headers: {
@@ -123,10 +145,8 @@ export const tokenConfig = (getState) => {
     if (token) {
         config.headers['x-auth-token'] = token;
     }
-
     return config;
 }
 
 export default authSlice.reducer;
-export const { login_success,
-    login_fail, logout_success } = authSlice.actions;
+export const { logout_success } = authSlice.actions;

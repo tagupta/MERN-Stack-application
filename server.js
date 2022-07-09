@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv');
 const connectDB = require('./database/db');
 const path = require('path');
+var cors = require('cors')
 
 // const items = require('./routes/api/items')
 
@@ -17,16 +18,17 @@ const app = express();
 app.use(express.json());
 
 //use routes
+app.use(cors());
 app.use('/api/items', require('./routes/api/items'));
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
 
 //Serve static assets if in production
-if(process.env.NODE_ENV === 'production'){
+if (process.env.NODE_ENV === 'production') {
     //Set Static folder
     app.use(express.static('client_side/build'));
 
-    app.get('*', (req,res) => {
+    app.get('*', (req, res) => {
         res.sendFile(path.resolve(__dirname, 'client_side', 'build', 'index.html'));
     })
 }
