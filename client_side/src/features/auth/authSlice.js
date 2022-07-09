@@ -128,5 +128,5 @@ export const tokenConfig = (getState) => {
 }
 
 export default authSlice.reducer;
-export const { login_success, register_success,
-    login_fail, logout_success, register_fail } = authSlice.actions;
+export const { login_success,
+    login_fail, logout_success } = authSlice.actions;

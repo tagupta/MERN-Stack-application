@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Navbar, NavbarBrand, NavbarToggler, Collapse, Nav, NavItem } from 'reactstrap';
 import { RegisterModal } from '../Auth/RegisterModal';
 import './AppNavBar.css';
-
+import { Logout } from '../Auth/Logout';
 class AppNavBar extends Component {
     state = {
         isOpen: false
@@ -24,6 +24,9 @@ class AppNavBar extends Component {
                         <Nav className="ml-auto" navbar>
                             <NavItem>
                                 <RegisterModal />
+                            </NavItem>
+                            <NavItem>
+                                <Logout />
                             </NavItem>
                         </Nav>
                     </Collapse>

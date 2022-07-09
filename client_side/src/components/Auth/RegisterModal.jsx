@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     Button, Modal, ModalHeader, ModalBody, Input, Label,
-    Form, FormGroup, Col, FormFeedback, FormText, NavLink, Alert
+    Form, FormGroup, Col, FormFeedback, NavLink, Alert
 } from 'reactstrap';
 import { registerUser } from '../../features/auth/authSlice';
 import { clear_error } from '../../features/error/errorSlice';
@@ -31,7 +31,15 @@ export const RegisterModal = () => {
         }
     }, [error]);
 
+    useEffect(() => {
+        if (isAuthenticated && modal) {
+            toggle();
+        }
+        // eslint-disable-next-line 
+    }, [isAuthenticated])
+
     const toggle = () => {
+        dispatch(clear_error());
         setEmailValid(false);
         setEmailInValid(false);
         setModal(!modal);
